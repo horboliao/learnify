@@ -6,15 +6,35 @@ import {CheckCheck, HelpCircle, Info} from "lucide-react";
 import {Chip} from "@nextui-org/react";
 import {AnswerProgress, Question} from ".prisma/client";
 import QuestionsPagination from "@/app/components/test/QuestionsPagination";
+import {useCurrentUser} from "@/hooks/useCurrentUser";
+import axios from "axios";
 interface TestProps {
     questionCount: number;
     answerProgress: AnswerProgress[];
     sumScoredPoints: number;
     sumPoints: number;
     questions: Question[];
+    lessonId: string;
+    courseProgressId: string;
 }
-const Test = ({questionCount, sumPoints, sumScoredPoints, answerProgress, questions}:TestProps) => {
-    const [showQuestions, setShowQuestions] = useState(true);
+const Test = ({questionCount, sumPoints, sumScoredPoints, answerProgress, questions, lessonId, courseProgressId}:TestProps) => {
+    const [showQuestions, setShowQuestions] = useState(false);
+    const user = useCurrentUser();
+    const startAssessment = async () => {
+        if (answerProgress.length === 0) {
+            setShowQuestions(!showQuestions)
+            try {
+                const values = {
+                    userId: user?.id,
+                    courseProgressId, lessonId
+                }
+                await axios.post(`/api/progress/${user?.id}/lessons/${lessonId}`, values).then(data => console.log(data));
+            } catch {
+                console.error("error in adding lesson progress");
+            }
+        }
+    }
+
     if (showQuestions) {
         return <QuestionsPagination questionCount={questionCount} questions={questions}/>
     } else {
@@ -64,14 +84,17 @@ const Test = ({questionCount, sumPoints, sumScoredPoints, answerProgress, questi
                             </Chip>
                         }
                     </div>
-                    <Button
-                        color={'primary'}
-                        variant={'shadow'}
-                        size={'lg'}
-                        onPress={()=>{setShowQuestions(!showQuestions)}}
-                    >
-                        Почати оцінювання
-                    </Button>
+                    {
+                        answerProgress.length === 0 &&
+                        <Button
+                            color={'primary'}
+                            variant={'shadow'}
+                            size={'lg'}
+                            onPress={startAssessment}
+                        >
+                            Почати оцінювання
+                        </Button>
+                    }
                 </div>
             </>
         );

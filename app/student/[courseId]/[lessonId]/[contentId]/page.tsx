@@ -7,10 +7,15 @@ import {currentUser} from "@/lib/auth";
 import Test from "@/app/components/test/Test";
 
 const LessonContentPage = async ({params}: {
-    params: { contentId: string; lessonId: string }
+    params: { courseId: string; contentId: string; lessonId: string }
 }) => {
-    const {contentId, lessonId} = params;
+    const {contentId, lessonId, courseId} = params;
     const user = currentUser();
+    const courseProgress = await database.courseProgress.findFirst({
+        where: {
+            userId: user.id, courseId
+        }
+    })
     const lesson = await database.lesson.findUnique({
         where: {
             id: lessonId,
@@ -82,6 +87,8 @@ const LessonContentPage = async ({params}: {
                                     sumPoints={sumPoints || 0}
                                     sumScoredPoints={sumScoredPoints || 0}
                                     questions={lesson.questions}
+                                    lessonId={lesson.id}
+                                    courseProgressId={courseProgress.id}
                                 />
                             </>
             }
