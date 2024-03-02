@@ -6,6 +6,7 @@ import {Input} from "@nextui-org/input";
 import {MoveLeft, MoveRight} from "lucide-react";
 import {Answer} from "@prisma/client";
 import {DndList} from "@/app/components/lists/DndList";
+import {Preview} from "@/app/components/Preview";
 
 interface QuestionsProps {
     questionCount: number;
@@ -14,10 +15,11 @@ interface QuestionsProps {
 const QuestionsPagination = ({questionCount, questions}:QuestionsProps) => {
     const [currentPage, setCurrentPage] = React.useState(1);
     const [question, setQuestion] = React.useState(questions[currentPage-1]);
-    const [inputValues, setInputValues] = useState<string[]>(new Array(question.answers.length).fill(''));
-    const [singleValue, setSingleValue] = useState(question.answers[0].title || "")
-    const [multiValues, setMultiValues] = React.useState([question.answers[0].title || ""]);
-    const [matchItems, setMatchItems] = useState(question.answers || []);
+    const [inputValues, setInputValues] = useState([]);
+    const [singleValue, setSingleValue] = useState("")
+    const [multiValues, setMultiValues] = React.useState([]);
+    const [matchItems, setMatchItems] = useState([]);
+    const [displayExplanation, setDisplayExplanation] = useState(false);
     const handleInputChange = (index: number, value: string) => {
         const newInputValues = [...inputValues];
         newInputValues[index] = value;
@@ -27,12 +29,10 @@ const QuestionsPagination = ({questionCount, questions}:QuestionsProps) => {
     const toggleQuestion = (pageNumber: number) => {
         setCurrentPage(pageNumber);
         setQuestion(questions[pageNumber-1])
-        setInputValues(new Array(questions[pageNumber-1].answers.length).fill(''))
-        setSingleValue(questions[pageNumber-1].answers[0].title)
+        setDisplayExplanation(false)
     }
 
     const onReorder = async (updateData: { id: string; position: number }[]) => {
-        console.log(updateData)
         const updatedItemsMap = new Map(updateData.map(item => [item.id, item]));
         const updatedOrder = question.answers.map(item => {
             const updatedItem = updatedItemsMap.get(item.id);
@@ -41,9 +41,37 @@ const QuestionsPagination = ({questionCount, questions}:QuestionsProps) => {
             }
             return item;
         });
-        console.log(updatedOrder)
         setMatchItems(updatedOrder);
     }
+
+    const checkAnswer = () => {
+        let isCorrect: boolean;
+
+        if (question.type === "INPUT") {
+            isCorrect = question.answers.every((answer) => {
+                return inputValues.find(userAnswer => userAnswer.toLowerCase() === answer.title.toLowerCase())
+            })
+        } else if (question.type === "SINGLECHOICE") {
+            isCorrect = question.answers.find(answer => answer.title === singleValue && answer.isCorrect);
+            console.log(singleValue)
+        } else if (question.type === "MULTICHOICE") {
+            isCorrect = question.answers.every(answer =>
+                multiValues.find(multiValue => answer.title === multiValue && answer.isCorrect) || !answer.isCorrect
+            );
+        } else {
+            isCorrect = matchItems.every(item => {
+                const correctAnswer = question.answers.find(answer => answer.id === item.id);
+                return correctAnswer && correctAnswer.position === item.position;
+            });
+        }
+
+        if (isCorrect) {
+            console.log("Правильно!");
+        } else {
+            console.log("Неправильно!", question.answers);
+        }
+        setDisplayExplanation(true)
+    };
 
     const renderQuestion = () => {
         return (
@@ -60,7 +88,7 @@ const QuestionsPagination = ({questionCount, questions}:QuestionsProps) => {
                         <Button
                             variant="solid"
                             color="primary"
-                            onPress={() => {}}
+                            onPress={checkAnswer}
                         >
                             Перевірити
                         </Button>
@@ -101,7 +129,6 @@ const QuestionsPagination = ({questionCount, questions}:QuestionsProps) => {
                                     <div>
                                         <CheckboxGroup
                                             value={multiValues}
-                                            defaultValue={multiValues}
                                             onValueChange={setMultiValues}
                                         >
                                             {
@@ -111,12 +138,6 @@ const QuestionsPagination = ({questionCount, questions}:QuestionsProps) => {
                                     </div>
                                     :
                                     <div>
-                                        {/*<MatchingForm*/}
-                                        {/*    options={initialData.answers}*/}
-                                        {/*    courseId={courseId}*/}
-                                        {/*    lessonId={lessonId}*/}
-                                        {/*    questionId={questionId}*/}
-                                        {/*/>*/}
                                         <DndList<Answer>
                                             items={question.answers || []}
                                             onReorder={onReorder}
@@ -158,6 +179,12 @@ const QuestionsPagination = ({questionCount, questions}:QuestionsProps) => {
                 </Button>
             </div>
             {renderQuestion()}
+            {
+                displayExplanation && question.explanation &&
+                <div>
+                    <Preview value={question.explanation}/>
+                </div>
+            }
         </div>
     );
 };
