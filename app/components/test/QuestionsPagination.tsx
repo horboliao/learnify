@@ -4,6 +4,8 @@ import {Button} from "@nextui-org/button";
 import {Question} from ".prisma/client";
 import {Input} from "@nextui-org/input";
 import {MoveLeft, MoveRight} from "lucide-react";
+import {Answer} from "@prisma/client";
+import {DndList} from "@/app/components/lists/DndList";
 
 interface QuestionsProps {
     questionCount: number;
@@ -15,12 +17,12 @@ const QuestionsPagination = ({questionCount, questions}:QuestionsProps) => {
     const [inputValues, setInputValues] = useState<string[]>(new Array(question.answers.length).fill(''));
     const [singleValue, setSingleValue] = useState(question.answers[0].title || "")
     const [multiValues, setMultiValues] = React.useState([question.answers[0].title || ""]);
+    const [matchItems, setMatchItems] = useState(question.answers || []);
     const handleInputChange = (index: number, value: string) => {
         const newInputValues = [...inputValues];
         newInputValues[index] = value;
         setInputValues(newInputValues);
     };
-    console.log(questions)
 
     const toggleQuestion = (pageNumber: number) => {
         setCurrentPage(pageNumber);
@@ -28,8 +30,22 @@ const QuestionsPagination = ({questionCount, questions}:QuestionsProps) => {
         setInputValues(new Array(questions[pageNumber-1].answers.length).fill(''))
         setSingleValue(questions[pageNumber-1].answers[0].title)
     }
+
+    const onReorder = async (updateData: { id: string; position: number }[]) => {
+        console.log(updateData)
+        const updatedItemsMap = new Map(updateData.map(item => [item.id, item]));
+        const updatedOrder = question.answers.map(item => {
+            const updatedItem = updatedItemsMap.get(item.id);
+            if (updatedItem) {
+                return { ...item, position: updatedItem.position };
+            }
+            return item;
+        });
+        console.log(updatedOrder)
+        setMatchItems(updatedOrder);
+    }
+
     const renderQuestion = () => {
-        console.log(question,singleValue)
         return (
             <div className={'my-4'}>
                 <div className={'flex flex-wrap justify-between gap-2 mb-4'}>
@@ -101,6 +117,11 @@ const QuestionsPagination = ({questionCount, questions}:QuestionsProps) => {
                                         {/*    lessonId={lessonId}*/}
                                         {/*    questionId={questionId}*/}
                                         {/*/>*/}
+                                        <DndList<Answer>
+                                            items={question.answers || []}
+                                            onReorder={onReorder}
+                                            readOnly
+                                        />
                                     </div>
                     }
                 </div>
