@@ -21,22 +21,20 @@ const Test = ({questionCount, sumPoints, sumScoredPoints, answerProgress, questi
     const [showQuestions, setShowQuestions] = useState(false);
     const user = useCurrentUser();
     const startAssessment = async () => {
-        if (answerProgress.length === 0) {
-            setShowQuestions(!showQuestions)
-            try {
-                const values = {
-                    userId: user?.id,
-                    courseProgressId, lessonId
-                }
-                await axios.post(`/api/progress/${user?.id}/lessons/${lessonId}`, values).then(data => console.log(data));
-            } catch {
-                console.error("error in adding lesson progress");
+        setShowQuestions(!showQuestions)
+        try {
+            const values = {
+                userId: user?.id,
+                courseProgressId, lessonId
             }
+            await axios.post(`/api/progress/${user?.id}/lessons/${lessonId}`, values).then(data => console.log(data));
+        } catch {
+            console.error("error in adding lesson progress");
         }
     }
 
     if (showQuestions) {
-        return <QuestionsPagination questionCount={questionCount} questions={questions}/>
+        return <QuestionsPagination questionCount={questionCount} questions={questions} lessonId={lessonId}/>
     } else {
         return (
             <>
@@ -85,7 +83,7 @@ const Test = ({questionCount, sumPoints, sumScoredPoints, answerProgress, questi
                         }
                     </div>
                     {
-                        answerProgress.length === 0 &&
+                        answerProgress.length < questionCount &&
                         <Button
                             color={'primary'}
                             variant={'shadow'}
