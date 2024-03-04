@@ -45,8 +45,8 @@ const LessonContentPage = async ({params}: {
         }
     })
     const questionCount = lesson.questions.length
-    const sumPoints = answerProgress?.reduce((accumulator, currentValue) => {
-        return accumulator + currentValue.points;
+    const sumPoints = lesson.questions.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.weight;
     }, 0);
     const sumScoredPoints = answerProgress?.reduce((accumulator, currentValue) => {
         return accumulator + currentValue.pointsScored;

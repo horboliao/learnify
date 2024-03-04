@@ -131,7 +131,7 @@ const QuestionsPagination = ({questionCount, questions, lessonId}:QuestionsProps
         }
         setExistingAnswer(prevState => ({
             ...prevState,
-            pointsScored: earnedPoints
+            pointsScored: earnedPoints<0 ? 0 : earnedPoints
         }));
         setDisplayExplanation(true)
     };

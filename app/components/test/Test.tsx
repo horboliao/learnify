@@ -90,7 +90,7 @@ const Test = ({questionCount, sumPoints, sumScoredPoints, answerProgress, questi
                             size={'lg'}
                             onPress={startAssessment}
                         >
-                            Почати оцінювання
+                            {answerProgress.length>0 ? 'Продовжити оцінювання' : 'Почати оцінювання'}
                         </Button>
                     }
                 </div>
