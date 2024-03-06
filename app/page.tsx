@@ -12,20 +12,19 @@ export default function Home() {
     const onClick = () => {
         signOut();
     }
-    const user = useCurrentUser();
+
     const role = useCurrentRole();
 
     if (role==="STUDENT") {
-        return redirect("/student");
+        return redirect("/courses");
+    }
+
+    if (role==="TUTOR") {
+        return redirect("/tutor/courses");
     }
 
     return (
         <main>
-            <Link href="/tutor/courses">
-                <Button>
-                    Переглянути ваші курси
-                </Button>
-            </Link>
             <Button onPress={onClick}>
                 Вийти з акаунта
             </Button>

@@ -5,6 +5,7 @@ import {Providers} from "@/app/providers";
 import {ToasterProvider} from "@/app/components/providers/toaster-provider";
 import {auth} from "@/auth";
 import {SessionProvider} from "next-auth/react";
+import CourseHeader from "@/app/components/header/CourseHeader";
 
 export const metadata: Metadata = {
   title: 'Learnify',
@@ -31,6 +32,7 @@ export default async function RootLayout({
           <body>
           <Providers>
               <ToasterProvider/>
+              <CourseHeader/>
             {children}
           </Providers>
           </body>

@@ -6,10 +6,8 @@ import {BookOpen, CheckSquare2, Square} from "lucide-react";
 import LessonContentItem from "@/app/components/lesson/LessonContentItem";
 import {database} from "@/lib/database";
 import {useCurrentUser} from "@/hooks/useCurrentUser";
-interface CourseSidebarProps {
-    isMenuOpen: boolean;
-}
-const CourseSidebar = ({isMenuOpen}: CourseSidebarProps) => {
+
+const CourseSidebar = () => {
     const { courseId } = useParams();
     const user = useCurrentUser();
     const [lessons, setLessons] = useState([]);
@@ -47,7 +45,7 @@ const CourseSidebar = ({isMenuOpen}: CourseSidebarProps) => {
     }
 
     return (
-        <div className={`${isMenuOpen ? 'md:w-1/5 sm:w-1/3 w-full h-full' : 'hidden'}`}>
+        <div className={'md:w-1/5 sm:w-1/3 w-full h-full'}>
             <ScrollShadow className='h-full px-6 pt-2 pb-8'>
                 <Accordion
                     variant="splitted"

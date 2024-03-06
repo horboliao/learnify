@@ -35,7 +35,9 @@ export const {
 
             if (session.user) {
                 session.user.name = token.name;
+                session.user.surname = token.surname;
                 session.user.email = token.email;
+                session.user.bio = token.bio;
                 session.user.isOAuth = token.isOAuth as boolean;
             }
 
@@ -54,9 +56,12 @@ export const {
 
             token.isOAuth = !!existingAccount;
             token.name = existingUser.name;
+            token.surname = existingUser.surname;
             token.email = existingUser.email;
             token.role = existingUser.role;
-            token.avatar = existingUser.avatar
+            token.avatar = existingUser.avatar;
+            token.id = existingUser.id;
+            token.bio = existingUser.bio;
 
             return token;
         }
