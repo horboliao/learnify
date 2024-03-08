@@ -38,6 +38,8 @@ export const {
                 session.user.surname = token.surname;
                 session.user.email = token.email;
                 session.user.bio = token.bio;
+                session.user.avatar = token.avatar;
+                session.user.password = token.password;
                 session.user.isOAuth = token.isOAuth as boolean;
             }
 
@@ -62,6 +64,7 @@ export const {
             token.avatar = existingUser.avatar;
             token.id = existingUser.id;
             token.bio = existingUser.bio;
+            token.password = existingUser.password;
 
             return token;
         }

@@ -13,6 +13,10 @@ const f = createUploadthing();
 // }
 
 export const ourFileRouter = {
+    avatar: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+        //.middleware(() => handleAuth())
+        .onUploadComplete(() => {}),
+
     courseBackground: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
         //.middleware(() => handleAuth())
         .onUploadComplete(() => {}),

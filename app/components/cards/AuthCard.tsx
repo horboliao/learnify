@@ -23,7 +23,7 @@ export const AuthCard = ({
                             }: AuthListingProps) => {
     return (
         <Card
-            className="border-none bg-white p-4 w-1/3 min-w-[300px]"
+            className="border-none bg-white p-4 w-1/3 min-w-[360px]"
             shadow="sm"
         >
             <CardHeader>

@@ -12,6 +12,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import {Select, SelectItem} from "@nextui-org/react";
 import {UserRole} from ".prisma/client";
+import {Eye, EyeOff} from "lucide-react";
+import {useState} from "react";
 
 const SignUpSchema = z.object({
     email: z.string().email(),
@@ -23,7 +25,8 @@ const SignUpSchema = z.object({
 
 export const SignUpForm = () => {
     const router = useRouter();
-
+    const [isVisible, setIsVisible] = useState(false);
+    const toggleVisibility = () => setIsVisible(!isVisible);
     const form = useForm<z.infer<typeof SignUpSchema>>({
         resolver: zodResolver(SignUpSchema),
         defaultValues: {
@@ -106,7 +109,16 @@ export const SignUpForm = () => {
                                 isInvalid={fieldState.invalid}
                                 errorMessage={fieldState.error?.message}
                                 placeholder="******"
-                                type="password"
+                                endContent={
+                                    <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                                        {isVisible ? (
+                                            <EyeOff className="text-2xl text-default-400 pointer-events-none" />
+                                        ) : (
+                                            <Eye className="text-2xl text-default-400 pointer-events-none" />
+                                        )}
+                                    </button>
+                                }
+                                type={isVisible ? "text" : "password"}
                             />
                         )}
                     />

@@ -6,11 +6,18 @@ import {NavbarBrand, NavbarContent, NavbarItem} from "@nextui-org/navbar";
 import {Link} from "@nextui-org/link";
 import {useCurrentUser} from "@/hooks/useCurrentUser";
 import {User} from "@nextui-org/user";
+import {signOut} from "next-auth/react";
 
 interface CourseHeaderProps {
 }
 export default function CourseHeader({}:CourseHeaderProps) {
     const user = useCurrentUser();
+    const onClick =() =>{
+        signOut();
+    }
+    if (!user) {
+        return null;
+    }
     return (
         <Navbar shouldHideOnScroll className={'font-medium'}>
             <NavbarBrand>
@@ -40,7 +47,7 @@ export default function CourseHeader({}:CourseHeaderProps) {
                             as="button"
                             avatarProps={{
                                 isBordered: true,
-                                src: user.avatar || '',
+                                src: user?.avatar || '',
                                 color: "primary"
                             }}
                             className="transition-transform"
@@ -52,7 +59,7 @@ export default function CourseHeader({}:CourseHeaderProps) {
                         <DropdownItem key="profile" href={'/profile'}>Мій профіль</DropdownItem>
                         <DropdownItem key="my_courses" href={'/my-courses'}>Мої курси</DropdownItem>
                         <DropdownItem key="analytics" href={'/student/analytics'}>Аналітика</DropdownItem>
-                        <DropdownItem key="logout" className="text-danger" color="danger">
+                        <DropdownItem key="logout" className="text-danger" color="danger" onPress={onClick}>
                             Вийти
                         </DropdownItem>
                     </DropdownMenu>
