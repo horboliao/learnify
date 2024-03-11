@@ -7,6 +7,7 @@ import {Link} from "@nextui-org/link";
 import {useCurrentUser} from "@/hooks/useCurrentUser";
 import {User} from "@nextui-org/user";
 import {signOut} from "next-auth/react";
+import {useRouter} from "next/navigation";
 
 interface CourseHeaderProps {
 }
@@ -15,9 +16,7 @@ export default function CourseHeader({}:CourseHeaderProps) {
     const onClick =() =>{
         signOut();
     }
-    if (!user) {
-        return null;
-    }
+
     return (
         <Navbar shouldHideOnScroll className={'font-medium'}>
             <NavbarBrand>
@@ -30,19 +29,23 @@ export default function CourseHeader({}:CourseHeaderProps) {
                         Всі курси
                     </Link>
                 </NavbarItem>
-                <NavbarItem>
-                    <Link color="foreground" href="/courses/my">
-                        Мої курси
-                    </Link>
-                </NavbarItem>
-                <NavbarItem>
-                    <Link color="foreground" href="/student/analytics">
-                        Аналітика
-                    </Link>
-                </NavbarItem>
+                {user&&
+                    <>
+                        <NavbarItem>
+                            <Link color="foreground" href="/courses/my">
+                                Мої курси
+                            </Link>
+                        </NavbarItem>
+                        <NavbarItem>
+                            <Link color="foreground" href="/student/analytics">
+                                Аналітика
+                            </Link>
+                        </NavbarItem>
+                        </>
+                }
             </NavbarContent>
             <NavbarContent as="div" justify="end">
-                <Dropdown placement="bottom-end">
+                {user&&<Dropdown placement="bottom-end">
                     <DropdownTrigger>
                         <User
                             as="button"
@@ -64,7 +67,7 @@ export default function CourseHeader({}:CourseHeaderProps) {
                             Вийти
                         </DropdownItem>
                     </DropdownMenu>
-                </Dropdown>
+                </Dropdown>}
             </NavbarContent>
         </Navbar>
     );

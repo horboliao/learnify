@@ -3,6 +3,7 @@ import CourseCard from "@/app/components/cards/CourseCard";
 import {database} from "@/lib/database";
 import {Category, User} from "@prisma/client";
 import {currentUser} from "@/lib/auth";
+import {redirect} from "next/navigation";
 
 interface CoursesListProps {
     isMyCourses?: boolean
@@ -12,12 +13,7 @@ const CoursesList = async ({isMyCourses}: CoursesListProps) => {
     let courses;
 
     if (user.role==='TUTOR'&&isMyCourses) {
-        courses = await database.course.findMany({
-            where: {isOpen: true, authorId: user.id},
-            include: {
-                lessons: true,
-            },
-        });
+        redirect('/tutor/courses');
     } else if (user.role==='STUDENT'&&isMyCourses) {
         const courseProgress = await database.courseProgress.findMany({
             where: {
