@@ -31,15 +31,16 @@ export default function CourseHeader({}:CourseHeaderProps) {
                     </Link>
                 </NavbarItem>
                 <NavbarItem>
+                    <Link color="foreground" href="/courses/my">
+                        Мої курси
+                    </Link>
+                </NavbarItem>
+                <NavbarItem>
                     <Link color="foreground" href="/student/analytics">
                         Аналітика
                     </Link>
                 </NavbarItem>
             </NavbarContent>
-            {/*<NavbarContent>*/}
-            {/*    <RedirectToLogin/>*/}
-            {/*    <CurrentUser/>*/}
-            {/*</NavbarContent>*/}
             <NavbarContent as="div" justify="end">
                 <Dropdown placement="bottom-end">
                     <DropdownTrigger>
@@ -57,7 +58,7 @@ export default function CourseHeader({}:CourseHeaderProps) {
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Profile Actions" variant="flat">
                         <DropdownItem key="profile" href={'/profile'}>Мій профіль</DropdownItem>
-                        <DropdownItem key="my_courses" href={'/my-courses'}>Мої курси</DropdownItem>
+                        <DropdownItem key="my_courses" href={'/courses/my'}>Мої курси</DropdownItem>
                         <DropdownItem key="analytics" href={'/student/analytics'}>Аналітика</DropdownItem>
                         <DropdownItem key="logout" className="text-danger" color="danger" onPress={onClick}>
                             Вийти

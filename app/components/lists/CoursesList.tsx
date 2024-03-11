@@ -1,18 +1,45 @@
 import React from 'react';
 import CourseCard from "@/app/components/cards/CourseCard";
 import {database} from "@/lib/database";
-import {Category, Course, User} from "@prisma/client";
+import {Category, User} from "@prisma/client";
+import {currentUser} from "@/lib/auth";
 
-const CoursesList = async () => {
+interface CoursesListProps {
+    isMyCourses?: boolean
+}
+const CoursesList = async ({isMyCourses}: CoursesListProps) => {
+    const user = await currentUser();
+    let courses;
 
-    const courses = await database.course.findMany({
-        where: {
-            isOpen: true
-        },
-        include: {
-            lessons: true,
-        },
-    });
+    if (user.role==='TUTOR'&&isMyCourses) {
+        courses = await database.course.findMany({
+            where: {isOpen: true, authorId: user.id},
+            include: {
+                lessons: true,
+            },
+        });
+    } else if (user.role==='STUDENT'&&isMyCourses) {
+        const courseProgress = await database.courseProgress.findMany({
+            where: {
+                userId: user.id
+            },
+            include: {
+                Course: {
+                    include: {
+                        lessons: true,
+                    }
+                }
+            }
+        })
+        courses = courseProgress.map(progress => progress.Course);
+    } else {
+        courses = await database.course.findMany({
+            where: {isOpen: true},
+            include: {
+                lessons: true,
+            },
+        });
+    }
 
     const users = await database.user.findMany();
     const categories = await database.category.findMany();

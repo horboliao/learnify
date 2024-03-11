@@ -15,19 +15,9 @@ export default function Home() {
 
     const role = useCurrentRole();
 
-    if (role==="STUDENT") {
-        return redirect("/courses");
-    }
-
     if (role==="TUTOR") {
         return redirect("/tutor/courses");
     }
 
-    return (
-        <main>
-            <Button onPress={onClick}>
-                Вийти з акаунта
-            </Button>
-        </main>
-    )
+    return redirect("/courses");
 }
