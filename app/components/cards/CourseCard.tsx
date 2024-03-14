@@ -22,7 +22,7 @@ const CourseCard = ({id, title, backgroundUrl, price, category, authorName, auth
     const categoryObj = subjects.find(subject => subject.name===category)
     const router = useRouter();
     return (
-        <Card isPressable onPress={() => router.push(`student/courses/${id}`)}>
+        <Card isPressable onPress={() => router.push(`courses/${id}`)}>
             <CardHeader className="flex flex-col gap-2 items-start">
                 {
                     backgroundUrl===null ? (

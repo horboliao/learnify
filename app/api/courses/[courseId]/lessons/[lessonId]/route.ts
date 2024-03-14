@@ -1,26 +1,21 @@
 import { NextResponse } from "next/server";
 import {database} from "@/lib/database";
-
-// const { Video } = new Mux(
-//     process.env.MUX_TOKEN_ID!,
-//     process.env.MUX_TOKEN_SECRET!,
-// );
+import {currentUser} from "@/lib/auth";
 
 export async function DELETE(
     req: Request,
     { params }: { params: { courseId: string; lessonId: string } }
 ) {
     try {
-        // const { userId } = route();
-        //
-        // if (!userId) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
+        const user = await currentUser();
+        if (!user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
         
         const ownCourse = await database.course.findUnique({
             where: {
                 id: params.courseId,
-                authorId: '123'//userId,
+                authorId: user.id
             }
         });
 
@@ -39,23 +34,6 @@ export async function DELETE(
         if (!chapter) {
             return new NextResponse("Not Found", { status: 404 });
         }
-
-        // if (chapter.videoUrl) {
-        //     const existingMuxData = await database.muxData.findFirst({
-        //         where: {
-        //             lessonId: params.lessonId,
-        //         }
-        //     });
-        //
-        //     if (existingMuxData) {
-        //         await Video.Assets.del(existingMuxData.assetId);
-        //         await database.muxData.delete({
-        //             where: {
-        //                 id: existingMuxData.id,
-        //             }
-        //         });
-        //     }
-        // }
 
         const deletedChapter = await database.lesson.delete({
             where: {
@@ -93,17 +71,17 @@ export async function PATCH(
     { params }: { params: { courseId: string; lessonId: string } }
 ) {
     try {
-        // const { userId } = route();
         const { isOpen, ...values } = await req.json();
 
-        // if (!userId) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
+        const user = await currentUser();
+        if (!user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
 
         const ownCourse = await database.course.findUnique({
             where: {
                 id: params.courseId,
-                authorId: '123'//userId
+                authorId: user.id
             }
         });
 
@@ -121,37 +99,6 @@ export async function PATCH(
                 ...values,
             }
         });
-
-        // if (values.videoUrl) {
-        //     const existingMuxData = await database.muxData.findFirst({
-        //         where: {
-        //             lessonId: params.lessonId,
-        //         }
-        //     });
-        //
-        //     if (existingMuxData) {
-        //         await Video.Assets.del(existingMuxData.assetId);
-        //         await database.muxData.delete({
-        //             where: {
-        //                 id: existingMuxData.id,
-        //             }
-        //         });
-        //     }
-        //
-        //     const asset = await Video.Assets.create({
-        //         input: values.videoUrl,
-        //         playback_policy: "public",
-        //         test: false,
-        //     });
-        //
-        //     await database.muxData.create({
-        //         data: {
-        //             lessonId: params.lessonId,
-        //             assetId: asset.id,
-        //             playbackId: asset.playback_ids?.[0]?.id,
-        //         }
-        //     });
-        // }
 
         return NextResponse.json(chapter);
     } catch (error) {

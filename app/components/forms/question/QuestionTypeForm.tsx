@@ -59,6 +59,21 @@ export const QuestionTypeForm = ({
 
     const selectedOption = options.find((option) => option.value === initialData.type);
 
+    const mapLabelToUkrainian = (label) => {
+        switch (label) {
+            case "INPUT":
+                return "Введення значення";
+            case "MATCHING":
+                return "Встановлення відповідності";
+            case "MULTICHOICE":
+                return "Кілька правильних відповідей";
+            case "SINGLECHOICE":
+                return "Одна правильна відповідь";
+            default:
+                return label;
+        }
+    };
+
     return (
         <Card className="mt-6 p-2">
             <CardHeader className="font-medium flex items-center justify-between">
@@ -79,12 +94,12 @@ export const QuestionTypeForm = ({
                                 ?
                                 <>
                                     <PlusCircle className="h-4 w-4 mr-2" />
-                                    Додати тип
+                                    Додати
                                 </>
                                 :
                                 <>
                                     <Pencil className="h-4 w-4 mr-2" />
-                                    Редагувати тип
+                                    Редагувати
                                 </>
                     }>
                 </Button>
@@ -92,7 +107,7 @@ export const QuestionTypeForm = ({
             <CardBody>
             {!isEditing && (
                 <p className={`text-sm ${!initialData.type ? 'text-gray-500' : ''}`}>
-                    {selectedOption?.label || "Тип не заданий"}
+                    {mapLabelToUkrainian(selectedOption?.label) || "Тип не заданий"}
                 </p>
             )}
             {isEditing && (
@@ -111,7 +126,7 @@ export const QuestionTypeForm = ({
                                 items={options}
                                 onChange={handleSelectionChange}
                             >
-                                {(item) => <SelectItem {...field} key={item.value}>{item.label}</SelectItem>}
+                                {(item) => <SelectItem {...field} key={item.value}>{mapLabelToUkrainian(item.label)}</SelectItem>}
                             </Select>
                         )}
                     />

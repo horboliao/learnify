@@ -46,6 +46,7 @@ export const SinglechoiceForm = ({ courseId, lessonId, questionId,options }: Sin
             await axios.post(`/api/courses/${courseId}/lessons/${lessonId}/questions/${questionId}/options`, singlechoice);
             toast.success("Варіант додано");
             toggleAdd();
+            form.reset()
             router.refresh();
         } catch {
             toast.error("Правильна відповідь вже була задана");
@@ -91,7 +92,7 @@ export const SinglechoiceForm = ({ courseId, lessonId, questionId,options }: Sin
                                 items={options}
                             >
                                 {
-                                    options.map((option) => <Radio key={option.value}>{option.label}</Radio>)
+                                    options.map((option) => <Radio key={option.value} value={option.value}>{option.label}</Radio>)
                                 }
                             </RadioGroup>
                             :

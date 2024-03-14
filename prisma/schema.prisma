@@ -166,6 +166,7 @@ model Question {
   id          String  @id @default(uuid()) @map("_id")
   title       String
   weight      Float?  @default(0)
+  notes       String?
   explanation String?
   lesson      Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   lessonId    String

@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import {database} from "@/lib/database";
+import {currentUser} from "@/lib/auth";
 
 export async function DELETE(
     req: Request,
     { params }: { params: { courseId: string; lessonId: string; questionId: string } }
 ) {
     try {
-        // const { userId } = route();
-        //
-        // if (!userId) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
+        const user = await currentUser();
+        if (!user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
 
         const question = await database.question.findUnique({
             where: {
@@ -57,12 +57,13 @@ export async function PATCH(
     { params }: { params: { courseId: string; lessonId: string; questionId: string } }
 ) {
     try {
-        // const { userId } = route();
         const { isPublished, ...values } = await req.json();
 
-        // if (!userId) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
+        const user = await currentUser();
+
+        if (!user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
 
         const question = await database.question.update({
             where: {

@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/database";
+import {currentUser} from "@/lib/auth";
 
 export async function POST(
     req: Request,
     { params }: { params: { questionId: string } }
 ) {
     try {
-        // const { userId } = route();
         const { title, isCorrect} = await req.json();
 
-        // if (!userId || !isTeacher(userId)) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
             const question = await database.question.findUnique({
                 where: {
                     id: params.questionId
@@ -20,12 +17,12 @@ export async function POST(
             const options = await database.answer.findMany({
                 where: {
                     questionId: params.questionId,
-                    isCorrect
+                    isCorrect: true
                 }
             })
 
         if (question.type === "SINGLECHOICE") {
-            if (options.length === 0) {
+            if (options.length === 0 || !isCorrect) {
                 const option = await database.answer.create({
                     data: {
                         questionId: params.questionId,

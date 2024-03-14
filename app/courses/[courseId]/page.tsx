@@ -58,16 +58,19 @@ const CourseViewPage = async ({params}: { params: { courseId: string }}) => {
                 <div className="flex flex-col gap-4 w-full items-start">
                     <div className="flex flex-row items-center justify-between w-full">
                         <h1 className="text-5xl font-medium">{course.title}</h1>
-                        <EnrollAction
-                            courseId={course.id}
-                            categoryId={course.categoryId}
-                            isEnrolled={enrolled}
-                            lessonCount={course.lessons.length}
-                        />
+                        {
+                            user.role === "STUDENT" &&
+                            <EnrollAction
+                                courseId={course.id}
+                                categoryId={course.categoryId}
+                                isEnrolled={enrolled}
+                                lessonCount={course.lessons.length}
+                            />
+                        }
                     </div>
                     <User
                         name={`${author.name} ${author.surname}`}
-                        description={author.bio}
+                        description={author.email}
                         avatarProps={{
                             src: `${author.avatar}`
                         }}

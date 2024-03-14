@@ -1,21 +1,22 @@
 import { NextResponse } from "next/server";
 import {database} from "@/lib/database";
+import {currentUser} from "@/lib/auth";
 
 export async function PATCH(
     req: Request,
     { params }: { params: { courseId: string } }
 ) {
     try {
-        // const { userId } = route();
-        //
-        // if (!userId) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
+        const user = await currentUser();
+
+        if (!user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
 
         const course = await database.course.findUnique({
             where: {
                 id: params.courseId,
-                authorId:'123'//userId,
+                authorId:user.id
             },
         });
 
@@ -26,7 +27,7 @@ export async function PATCH(
         const unpublishedCourse = await database.course.update({
             where: {
                 id: params.courseId,
-                authorId:'123'//userId,
+                authorId:user.id
             },
             data: {
                 isOpen: false,

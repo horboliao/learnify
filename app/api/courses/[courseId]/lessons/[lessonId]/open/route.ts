@@ -1,27 +1,28 @@
 import { NextResponse } from "next/server";
 import {database} from "@/lib/database";
+import {currentUser} from "@/lib/auth";
 
 export async function PATCH(
     req: Request,
     { params }: { params: { courseId: string; lessonId: string } }
 ) {
     try {
-        // const { userId } = route();
-        //
-        // if (!userId) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
+        const user = await currentUser();
 
-        // const ownCourse = await database.[userId].findUnique({
-        //     where: {
-        //         id: params.courseId,
-        //         authorId: '123'
-        //     }
-        // });
-        //
-        // if (!ownCourse) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
+        if (!user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const ownCourse = await database.course.findUnique({
+            where: {
+                id: params.courseId,
+                authorId: user.id
+            }
+        });
+
+        if (!ownCourse) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
 
         const chapter = await database.lesson.findUnique({
             where: {

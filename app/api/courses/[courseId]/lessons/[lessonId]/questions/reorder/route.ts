@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import {database} from "@/lib/database";
+import {currentUser} from "@/lib/auth";
 
 
 export async function PUT(
@@ -7,11 +8,11 @@ export async function PUT(
     { params }: { params: { lessonId: string; } }
 ) {
     try {
-        // const { userId } = route();
+        const user = await currentUser();
 
-        // if (!userId) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
+        if (!user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
 
         const { list } = await req.json();
 

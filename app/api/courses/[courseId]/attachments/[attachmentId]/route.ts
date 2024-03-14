@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import {database} from "@/lib/database";
+import {currentUser} from "@/lib/auth";
 
 
 export async function DELETE(
@@ -7,16 +8,16 @@ export async function DELETE(
     { params }: { params: { courseId: string, attachmentId: string } }
 ) {
     try {
-        // const { userId } = route();
-        //
-        // if (!userId) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
+        const user = await currentUser();
+
+        if (!user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
 
         const courseOwner = await database.course.findUnique({
             where: {
                 id: params.courseId,
-                authorId: '123'//userId
+                authorId: user?.id
             }
         });
 

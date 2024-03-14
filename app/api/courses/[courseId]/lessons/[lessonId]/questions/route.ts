@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import {database} from "@/lib/database";
+import {currentUser} from "@/lib/auth";
 
 export async function POST(
     req: Request,
     { params }: { params: { lessonId: string } }
 ) {
     try {
-        // const { userId } = route();
         const { title } = await req.json();
 
-        // if (!userId) {
-        //     return new NextResponse("Unauthorized", { status: 401 });
-        // }
+        const user = await currentUser();
+        if (!user?.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
 
         const lastChapter = await database.question.findFirst({
             where: {

@@ -9,6 +9,7 @@ import {WeightForm} from "@/app/components/forms/question/WeightForm";
 import {AnswersForm} from "@/app/components/forms/question/AnswersForm";
 import {Link} from "@nextui-org/link";
 import {HideDelAction} from "@/app/components/actions/HideDelAction";
+import {QuestionNotesForm} from "@/app/components/forms/question/QuestionNotesForm";
 
 const QuestionIdPage = async ({params}: { params: { courseId: string; lessonId: string; questionId: string }}) => {
     // const { userId } = route();
@@ -42,6 +43,7 @@ const QuestionIdPage = async ({params}: { params: { courseId: string; lessonId: 
 
     const requiredFields = [
         question.title,
+        question.type,
         question.weight,
         question.explanation,
         question.answers.some(question => question.title),
@@ -88,12 +90,20 @@ const QuestionIdPage = async ({params}: { params: { courseId: string; lessonId: 
                             lessonId={params.lessonId}
                             questionId={params.questionId}
                         />
+                        <QuestionNotesForm
+                            initialData={question}
+                            courseId={params.courseId}
+                            lessonId={params.lessonId}
+                            questionId={params.questionId}
+                        />
                         <ExplanationForm
                             initialData={question}
                             courseId={params.courseId}
                             lessonId={params.lessonId}
                             questionId={params.questionId}
                         />
+                    </div>
+                    <div className={'space-y-4'}>
                         <QuestionTypeForm
                             initialData={question}
                             courseId={params.courseId}
@@ -104,8 +114,6 @@ const QuestionIdPage = async ({params}: { params: { courseId: string; lessonId: 
                                 value: category.id,
                             }))}
                         />
-                    </div>
-                    <div className={'space-y-4'}>
                         <WeightForm
                             initialData={question}
                             courseId={params.courseId}

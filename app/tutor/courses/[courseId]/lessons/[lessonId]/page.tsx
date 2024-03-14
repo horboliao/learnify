@@ -15,13 +15,8 @@ const ChapterIdPage = async ({
                              }: {
     params: { courseId: string; lessonId: string }
 }) => {
-    // const { userId } = route();
-    //
-    // if (!userId) {
-    //     return redirect("/");
-    // }
     
-    const chapter = await database.lesson.findUnique({
+    const lesson = await database.lesson.findUnique({
         where: {
             id: params.lessonId,
             courseId: params.courseId
@@ -35,14 +30,14 @@ const ChapterIdPage = async ({
         },
     });
 
-    if (!chapter) {
+    if (!lesson) {
         return redirect("/")
     }
 
     const requiredFields = [
-        chapter.title,
-        chapter.notes,
-        chapter.questions.some(question => question.isOpen),
+        lesson.title,
+        lesson.notes,
+        lesson.questions.some(question => question.isOpen),
     ];
 
     const totalFields = requiredFields.length;
@@ -73,35 +68,35 @@ const ChapterIdPage = async ({
                         disabled={!isComplete}
                         courseId={params.courseId}
                         lessonId={params.lessonId}
-                        isOpenItem={chapter.isOpen}
+                        isOpenItem={lesson.isOpen}
                     />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <div className="space-y-4">
                         <LessonTitleForm
-                            initialData={chapter}
-                            courseId={params.courseId}
-                            lessonId={params.lessonId}
-                        />
-                        <LessonNotesForm
-                            initialData={chapter}
+                            initialData={lesson}
                             courseId={params.courseId}
                             lessonId={params.lessonId}
                         />
                         <LessonAccessForm
-                            initialData={chapter}
+                            initialData={lesson}
                             courseId={params.courseId}
                             lessonId={params.lessonId}
                         />
-                        <LessonVideoForm
-                            initialData={chapter}
-                            lessonId={params.lessonId}
+                        <LessonNotesForm
+                            initialData={lesson}
                             courseId={params.courseId}
+                            lessonId={params.lessonId}
                         />
                     </div>
                     <div className={'space-y-4'}>
+                        <LessonVideoForm
+                            initialData={lesson}
+                            lessonId={params.lessonId}
+                            courseId={params.courseId}
+                        />
                         <QuestionsForm
-                            initialData={chapter}
+                            initialData={lesson}
                             lessonId={params.lessonId}
                             courseId={params.courseId}
                         />
