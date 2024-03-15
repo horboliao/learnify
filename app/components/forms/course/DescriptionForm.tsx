@@ -68,7 +68,7 @@ export const DescriptionForm = ({
                             ?
                             null
                             :
-                            !isEditing && !initialData.categoryId
+                            !isEditing && !initialData.description
                             ?
                                 <>
                                     <PlusCircle className="h-4 w-4 mr-2" />
@@ -83,7 +83,7 @@ export const DescriptionForm = ({
                             ?
                             <>Скасувати</>
                             :
-                            !isEditing && !initialData.categoryId
+                            !isEditing && !initialData.description
                                 ?
                                 <>
                                     Додати опис

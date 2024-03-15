@@ -4,7 +4,7 @@ import {SignUpForm} from "@/app/components/forms/auth/SignUpForm";
 
 const SignUpPage = () => {
     return (
-        <div className={`pt-36 flex flex-col items-center`}>
+        <div className={`pt-2 flex flex-col items-center`}>
             <SignUpForm/>
         </div>
     );

@@ -9,7 +9,7 @@ export async function POST(
 ) {
     try {
         const user = await currentUser();
-        const { url } = await req.json();
+        const { url, name } = await req.json();
 
         if (!user?.id) {
             return new NextResponse("Unauthorized", { status: 401 });
@@ -29,7 +29,7 @@ export async function POST(
         const attachment = await database.attachment.create({
             data: {
                 url,
-                name: url.split("/").pop(),
+                name,
                 courseId: params.courseId,
             }
         });

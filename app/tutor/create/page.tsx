@@ -38,9 +38,9 @@ const CreateCoursePage = () => {
     }
     return (
         <div className='p-4'>
-            <h1 className="text-2xl">Name your course</h1>
+            <h1 className="text-2xl">Назвіть ваш курс</h1>
             <p className="text-sm text-slate-600">
-                What would you like to name your course? Don&apos;t worry, you can change this later.
+               Яку б назву ви хотіли надати вашому курсу? Не хвилюйтесь, ви зможете змінити її в подальшому.
             </p>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 mt-8">
                 <Controller
@@ -51,21 +51,21 @@ const CreateCoursePage = () => {
                             {...field}
                             isRequired
                             disabled={isSubmitting}
-                            label={'Course title'}
+                            label={'Назва курсу'}
                             isInvalid={fieldState.invalid}
                             errorMessage={fieldState.error?.message}
-                            placeholder="e.g. 'Advanced web development'"
-                            description={'What will you teach in this [userId]?'}
+                            placeholder="напр. 'Література ХХ століття'"
+                            description={'Чому б ви хотіли навчити користувачів?'}
                         />
                     )}
                 />
                 <div className="flex items-center gap-x-2">
                     <Link href="/">
-                        <Button type="button" variant="ghost">
-                            Cancel
+                        <Button type="button" variant="ghost" color={'primary'}>
+                            Скасувати
                         </Button>
                     </Link>
-                    <Button type="submit" disabled={!isValid || isSubmitting}>
+                    <Button type="submit" color={'primary'} disabled={!isValid || isSubmitting}>
                         Continue
                     </Button>
                 </div>

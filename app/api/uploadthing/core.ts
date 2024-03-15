@@ -17,7 +17,7 @@ export const ourFileRouter = {
         //.middleware(() => handleAuth())
         .onUploadComplete(() => {}),
 
-    courseBackground: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+    courseBackground: f({ image: { maxFileSize: "10MB", maxFileCount: 1 } })
         //.middleware(() => handleAuth())
         .onUploadComplete(() => {}),
 

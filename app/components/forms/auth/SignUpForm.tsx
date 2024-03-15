@@ -43,7 +43,6 @@ export const SignUpForm = () => {
         e: React.ChangeEvent<HTMLSelectElement>
     ) => {
         setValue('role', e.target.value);
-        console.log(form.getValues())
     };
     const onSubmit = async (values: z.infer<typeof SignUpSchema>) => {
         try {
@@ -169,7 +168,7 @@ export const SignUpForm = () => {
                     />
                 </div>
                 <Button
-                    disabled={!isValid || isSubmitting}
+                    disabled={!isValid}
                     type="submit"
                     className={'w-full'}
                     color='primary'

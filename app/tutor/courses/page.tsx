@@ -5,7 +5,7 @@ import {currentUser} from "@/lib/auth";
 
 const CoursesPage = async () => {
 
-    const user = currentUser();
+    const user = await currentUser();
     const courses = await database.course.findMany({
         where: {
             authorId: user.id,
