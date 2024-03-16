@@ -5,7 +5,7 @@ import {
     Draggable,
     DropResult,
 } from "@hello-pangea/dnd";
-import {Grip, Hand, Pencil} from "lucide-react";
+import {Grip, Hand, Pencil, Trash} from "lucide-react";
 import { Chip } from "@nextui-org/chip";
 import {Card, CardBody} from "@nextui-org/card";
 import {Button} from "@nextui-org/button";
@@ -14,6 +14,7 @@ interface DndListProps<T> {
     items: T[];
     onReorder: (updateData: { id: string; position: number }[]) => void;
     onEdit?: (id: string) => void;
+    onDelete?: (id: string) => void;
     readOnly?: boolean;
 }
 
@@ -21,6 +22,7 @@ export const DndList = <T extends { id: string; isOpen?: boolean }>({
                                                                         items,
                                                                         onReorder,
                                                                         onEdit,
+                                                                        onDelete,
                                                                         readOnly
                                                                     }: DndListProps<T>) => {
     const [isMounted, setIsMounted] = useState(false);
@@ -56,6 +58,19 @@ export const DndList = <T extends { id: string; isOpen?: boolean }>({
         onReorder(bulkUpdateData);
     };
 
+    const deleteItem = (id: string) => {
+        const updatedItems = listItems.filter(item => item.id !== id);
+        setListItems(updatedItems);
+        const bulkUpdateData = updatedItems.map((item, index) => ({
+            id: item.id,
+            position: index,
+        }));
+        if (onDelete) {
+            onDelete(id)
+        }
+        onReorder(bulkUpdateData);
+    };
+
     if (!isMounted) {
         return null;
     }
@@ -74,17 +89,29 @@ export const DndList = <T extends { id: string; isOpen?: boolean }>({
                                 {(provided) => (
                                     <Card ref={provided.innerRef} {...provided.draggableProps} >
                                         <CardBody className={'flex flex-row justify-between items-center'}>
-                                            <div className={'flex flex-row justify-between items-center'}>
-                                                <Button
-                                                    isIconOnly
-                                                    color="primary"
-                                                    variant={'light'}
-                                                    className={'mr-2'}
-                                                    {...provided.dragHandleProps}
-                                                >
-                                                    <Hand className="h-5 w-5" />
-                                                </Button>
-                                                {item.title}
+                                            <div className={'flex flex-row justify-between items-center w-full gap-2'}>
+                                                <div className={'flex gap-2 items-center'}>
+                                                    <Button
+                                                        isIconOnly
+                                                        color="primary"
+                                                        variant={'light'}
+                                                        className={'mr-2'}
+                                                        {...provided.dragHandleProps}
+                                                    >
+                                                        <Hand className="h-5 w-5" />
+                                                    </Button>
+                                                    {item.title}
+                                                </div>
+                                                {
+                                                    onDelete &&
+                                                    <Button
+                                                        isIconOnly
+                                                        color="danger"
+                                                        onPress={() => deleteItem(item.id)}
+                                                    >
+                                                        <Trash className="h-4 w-4" />
+                                                    </Button>
+                                                }
                                             </div>
                                         {
                                             !readOnly && (

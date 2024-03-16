@@ -6,7 +6,9 @@ import {Card, CardBody} from "@nextui-org/card";
 import {Course, Lesson, Question} from "@prisma/client";
 import {Accordion, AccordionItem} from "@nextui-org/react";
 import CourseContentItem from "@/app/components/course/CourseContentItem";
-import {Unlock, Lock} from "lucide-react";
+import {Unlock, Lock, File, X, ArrowDownToLine} from "lucide-react";
+import {Button} from "@nextui-org/button";
+import {Link} from "@nextui-org/link";
 
 interface CourseContentProps {
     description: string;
@@ -16,8 +18,15 @@ interface CourseContentProps {
     }
     price: number;
     lessons: Lesson[] & { questions: Question[] };
+    attachments: [];
 }
-const CourseContent = ({description, price, categoryObj, lessons}:CourseContentProps) => {
+const CourseContent = ({description, price, categoryObj, lessons, attachments}:CourseContentProps) => {
+    let lessonNumber = 0;
+
+    function onDownload(id: string) {
+console.log(id)
+    }
+
     return (
         <div className="w-full" >
             <Tabs aria-label="Dynamic tabs" variant="light" color="primary" size="lg`">
@@ -37,17 +46,18 @@ const CourseContent = ({description, price, categoryObj, lessons}:CourseContentP
                     <Accordion variant="splitted">
                         {
                             lessons.map((lesson) => {
+                                lessonNumber++;
                                 return (
                                     <AccordionItem
                                         className="font-medium"
                                         key={lesson.position}
                                         aria-label={lesson.title}
-                                        title={`${lesson.position+1}. ${lesson.title}`}
-                                        startContent={lesson.isFree?(<Unlock className="h-4 w-4"/>):(<Lock className="h-4 w-4"/>)}
+                                        title={`${lessonNumber}. ${lesson.title}`}
+                                        startContent={lesson.isFree||!price?(<Unlock className="h-4 w-4"/>):(<Lock className="h-4 w-4"/>)}
                                     >
                                         <CourseContentItem
                                             title={lesson.title}
-                                            isFree={lesson.isFree}
+                                            isFree={lesson.isFree||!price}
                                             videoUrl={lesson.videoUrl}
                                             notes={lesson.notes}
                                             questionCount={lesson.questions.length}
@@ -69,7 +79,23 @@ const CourseContent = ({description, price, categoryObj, lessons}:CourseContentP
                 <Tab key='docs' title="Матеріали">
                     <Card className="p-2">
                         <CardBody>
-                            якщо записаний на курс показати матеріали і все те що не видно і шо не в уроці
+                            {attachments.length > 0 && (
+                                <div className="space-y-2">
+                                    {attachments.map((attachment) => (
+                                        <Link
+                                            href={attachment.url}
+                                            isExternal
+                                            key={attachment.id}
+                                            size={'sm'}
+                                        >
+                                            <File size={16} className={'mr-2'}/>
+                                            <p className="">
+                                                {attachment.name}
+                                            </p>
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
                         </CardBody>
                     </Card>
                 </Tab>

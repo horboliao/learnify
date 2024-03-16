@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {Controller, useForm} from "react-hook-form";
-import {BookOpenCheck, BookOpenText, Pencil} from "lucide-react";
+import {BookOpenCheck, BookOpenText, Pencil, PlusCircle} from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -70,15 +70,35 @@ export const ExplanationForm = ({
                     onClick={toggleEdit}
                     variant="ghost"
                     color='primary'
-                    startContent={isEditing ? null : <Pencil className="h-4 w-4 mr-2"/>}>
+                    startContent={
+                        isEditing
+                            ?
+                            null
+                            :
+                            !isEditing && !initialData?.explanation
+                                ?
+                                <>
+                                    <PlusCircle className="h-4 w-4 mr-2" />
+                                </>
+                                :
+                                <>
+                                    <Pencil className="h-4 w-4 mr-2" />
+                                </>
+                    }>
                     {
                         isEditing
                             ?
                             <>Скасувати</>
                             :
-                            <>
-                                Редагувати
-                            </>
+                            !isEditing && !initialData?.explanation
+                                ?
+                                <>
+                                    Додати
+                                </>
+                                :
+                                <>
+                                    Редагувати
+                                </>
                     }
                 </Button>
             </CardHeader>

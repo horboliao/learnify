@@ -168,7 +168,6 @@ export const SignUpForm = () => {
                     />
                 </div>
                 <Button
-                    disabled={!isValid}
                     type="submit"
                     className={'w-full'}
                     color='primary'

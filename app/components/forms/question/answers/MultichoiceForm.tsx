@@ -3,8 +3,8 @@ import {useRouter} from "next/navigation";
 import {Controller, useForm} from "react-hook-form";
 import toast from "react-hot-toast";
 import {Button} from "@nextui-org/button";
-import {CheckSquare2, CircleDot, Pencil, Plus, PlusCircle} from "lucide-react";
-import {Checkbox, CheckboxGroup} from "@nextui-org/react";
+import {CheckSquare2, CircleDot, Pencil, Plus, PlusCircle, Trash} from "lucide-react";
+import {Checkbox, CheckboxGroup, Radio} from "@nextui-org/react";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -46,11 +46,24 @@ export const MultichoiceForm = ({ courseId, lessonId, questionId,options }: Mult
             await axios.post(`/api/courses/${courseId}/lessons/${lessonId}/questions/${questionId}/options`, multichoice);
             toast.success("Опцію додано");
             toggleAdd();
+            form.reset();
             router.refresh();
         } catch {
             toast.error("Не вдалось додати опцію");
         }
     }
+
+    const onDeleteOption = async (optionId: string) => {
+        try {
+            await axios.delete(
+                `/api/courses/${courseId}/lessons/${lessonId}/questions/${questionId}/options/${optionId}`
+            );
+            toast.success("Варіант видалено");
+            router.refresh();
+        } catch {
+            toast.error("Помилка під час видалення варіанта");
+        }
+    };
 
     const correctAnsw = options.filter((option) => option.isCorrect);
 
@@ -96,7 +109,19 @@ export const MultichoiceForm = ({ courseId, lessonId, questionId,options }: Mult
                                 items={options}
                             >
                                 {
-                                    options.map((option) => <Checkbox key={option.value}>{option.label}</Checkbox>)
+                                    options.map((option) =>
+                                        <div key={option.value} className="flex justify-between items-center">
+                                            <Checkbox value={option.value}>{option.label}</Checkbox>
+                                            <div className="flex gap-2 items-center">
+                                                <Button
+                                                    isIconOnly
+                                                    color="danger"
+                                                    onPress={() => onDeleteOption(option.value)}>
+                                                    <Trash className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )
                                 }
                             </CheckboxGroup>
                         )
@@ -137,9 +162,6 @@ export const MultichoiceForm = ({ courseId, lessonId, questionId,options }: Mult
                             </Button>
                         </div>
                     </form>
-                    <p className="text-xs text-muted-foreground mt-4">
-                        Зауважте, додання варіанту відповіді - це незворотна дія, впевніться в коректності введених даних
-                    </p>
                 </>
             )}
             </CardBody>

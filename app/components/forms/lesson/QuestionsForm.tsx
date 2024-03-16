@@ -54,6 +54,7 @@ export const QuestionsForm = ({
             await axios.post(`/api/courses/${courseId}/lessons/${lessonId}/questions`, values);
             toast.success("Питання додано");
             toggleCreating();
+            form.reset();
             router.refresh();
         } catch {
             toast.error("Не вдалось додати питання");

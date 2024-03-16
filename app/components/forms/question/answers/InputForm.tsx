@@ -3,19 +3,20 @@ import {useRouter} from "next/navigation";
 import {Controller, useForm} from "react-hook-form";
 import toast from "react-hot-toast";
 import {Button} from "@nextui-org/button";
-import {Pencil, Plus, PlusCircle, TextCursorInput, Weight} from "lucide-react";
+import {Pencil, Plus, PlusCircle, TextCursorInput, Trash, Weight} from "lucide-react";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import axios from "axios";
 import {Input} from "@nextui-org/input";
 import {Card, CardBody, CardHeader} from "@nextui-org/card";
 import {Preview} from "@/app/components/Preview";
+import {Checkbox} from "@nextui-org/react";
 
 interface InputFormProps {
     courseId: string;
     lessonId: string;
     questionId: string;
-    options: { value: string }[];
+    options: { label: string; value: string; }[];
 }
 
 const formSchema = z.object({
@@ -39,11 +40,24 @@ export const InputForm = ({ courseId, lessonId, questionId, options }: InputForm
     const { handleSubmit, control, formState } = form;
     const { isSubmitting } = formState;
 
+    const onDeleteOption = async (optionId: string) => {
+        try {
+            await axios.delete(
+                `/api/courses/${courseId}/lessons/${lessonId}/questions/${questionId}/options/${optionId}`
+            );
+            toast.success("Варіант видалено");
+            router.refresh();
+        } catch {
+            toast.error("Помилка під час видалення варіанта");
+        }
+    };
+
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             await axios.post(`/api/courses/${courseId}/lessons/${lessonId}/questions/${questionId}/options`, values);
             toast.success("Опцію додано");
             toggleAdd();
+            form.reset();
             router.refresh();
         } catch {
             toast.error("Не вдалось додати опцію");
@@ -81,14 +95,31 @@ export const InputForm = ({ courseId, lessonId, questionId, options }: InputForm
                             ?
                                 (
                                 options.map((option) =>
-                                    <Input
-                                        isDisabled
-                                        key={option.value}
-                                        size={'sm'}
-                                        className={'mb-2'}
-                                        color={'primary'}
-                                        defaultValue={option.value}
-                                    />
+                                    // <Input
+                                    //     isDisabled
+                                    //     key={option.value}
+                                    //     size={'sm'}
+                                    //     className={'mb-2'}
+                                    //     color={'primary'}
+                                    //     defaultValue={option.value}
+                                    // />
+                                    <div key={option.value} className="flex justify-between items-center mb-2 relative">
+                                        <Input
+                                            isDisabled
+                                            key={option.value}
+                                            size={'sm'}
+                                            color={'primary'}
+                                            defaultValue={option.label}
+                                        />
+                                        <div className="absolute top-1 right-1">
+                                            <Button
+                                                isIconOnly
+                                                color="danger"
+                                                onPress={() => onDeleteOption(option.value)}>
+                                                <Trash className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
                                 )
                             )
                                 :
@@ -129,9 +160,6 @@ export const InputForm = ({ courseId, lessonId, questionId, options }: InputForm
                         </div>
                     </form>
                 )}
-                <p className="text-xs text-muted-foreground mt-4">
-                    Зауважте, додання варіанту відповіді - це незворотна дія, впевніться в коректності введених даних
-                </p>
             </CardBody>
         </Card>
     )

@@ -12,6 +12,7 @@ interface CourseContentItemProps {
     questions: Question[];
 }
 const CourseContentItem = ({isFree, videoUrl, notes, questionCount, questions}:CourseContentItemProps) => {
+    let questionNumber = 0;
     return (
         <div>
             {
@@ -44,8 +45,9 @@ const CourseContentItem = ({isFree, videoUrl, notes, questionCount, questions}:C
             <div className="flex flex-col gap-2 my-4 font-normal">
                 {
                     questions.map((question) => {
+                        questionNumber++;
                         return (
-                            <p>{question.position+1}. {question.title}</p>
+                            <p>{questionNumber}. {question.title}</p>
                         )
                     })
                 }

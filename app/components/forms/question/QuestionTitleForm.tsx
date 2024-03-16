@@ -9,9 +9,8 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import {Button} from "@nextui-org/button";
-import {Preview} from "@/app/components/Preview";
-import {Editor} from "@/app/components/Editor";
 import {Card, CardBody, CardHeader} from "@nextui-org/card";
+import {Input} from "@nextui-org/input";
 
 interface QuestionTitleFormProps {
     initialData: {
@@ -85,9 +84,7 @@ export const QuestionTitleForm = ({
             <CardBody>
             {!isEditing && (
                 <div className={`text-sm`}>
-                    {initialData.title && (
-                        <Preview value={initialData.title} />
-                    )}
+                    {initialData.title}
                 </div>
             )}
             {isEditing && (
@@ -99,8 +96,16 @@ export const QuestionTitleForm = ({
                     <Controller
                         name="title"
                         control={control}
-                        render={({ field }) => (
-                            <Editor {...field}/>
+                        render={({ field, fieldState }) => (
+                            <Input
+                                {...field}
+                                isRequired
+                                disabled={isSubmitting}
+                                label={'Назва питання'}
+                                isInvalid={fieldState.invalid}
+                                errorMessage={fieldState.error?.message}
+                                placeholder="напр. 'Україна в 50 роки ХХ століття'"
+                            />
                         )}
                     />
                     <div className="flex items-center gap-x-2">

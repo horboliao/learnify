@@ -57,6 +57,7 @@ export const MatchingForm = ({
             await axios.post(`/api/courses/${courseId}/lessons/${lessonId}/questions/${questionId}/options/matching`, values);
             toast.success("Опцію додано");
             toggleCreating();
+            form.reset();
             router.refresh();
         } catch {
             toast.error("Не вдалось додати опцію");
@@ -75,6 +76,18 @@ export const MatchingForm = ({
             toast.error("Не вдалось змістити варіанти відповідей");
         } finally {
             setIsUpdating(false);
+        }
+    }
+
+    const onDelete = async (optionId: string) => {
+        try {
+            await axios.delete(
+                `/api/courses/${courseId}/lessons/${lessonId}/questions/${questionId}/options/${optionId}`
+            );
+            toast.success("Варіант видалено");
+            router.refresh();
+        } catch {
+            toast.error("Помилка під час видалення варіанта");
         }
     }
 
@@ -147,6 +160,7 @@ export const MatchingForm = ({
                         <DndList<Answer>
                             items={options || []}
                             onReorder={onReorder}
+                            onDelete={onDelete}
                             readOnly
                         />
                     </div>

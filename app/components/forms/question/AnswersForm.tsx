@@ -34,7 +34,8 @@ export const AnswersForm = ({
                             lessonId={lessonId}
                             questionId={questionId}
                             options={initialData.answers.map((answer) => ({
-                                value: answer.title || "",
+                                label: answer.title || "",
+                                value: answer.id,
                             }))}
                         />
                     </div>

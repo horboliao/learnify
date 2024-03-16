@@ -50,6 +50,7 @@ export const LessonsForm = ({
         try {
             await axios.post(`/api/courses/${courseId}/lessons`, values);
             toast.success("Урок додано");
+            form.reset();
             toggleCreating();
             router.refresh();
         } catch {

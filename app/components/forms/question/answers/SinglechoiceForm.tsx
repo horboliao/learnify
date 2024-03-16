@@ -3,7 +3,7 @@ import {useRouter} from "next/navigation";
 import {Controller, useForm} from "react-hook-form";
 import toast from "react-hot-toast";
 import {Button} from "@nextui-org/button";
-import {CircleDot, Pencil, Plus, PlusCircle, Weight} from "lucide-react";
+import {CircleDot, Pencil, Plus, PlusCircle, Trash, Weight} from "lucide-react";
 import {Checkbox, Radio, RadioGroup} from "@nextui-org/react";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -52,6 +52,17 @@ export const SinglechoiceForm = ({ courseId, lessonId, questionId,options }: Sin
             toast.error("Правильна відповідь вже була задана");
         }
     }
+    const onDeleteOption = async (optionId: string) => {
+        try {
+            await axios.delete(
+                `/api/courses/${courseId}/lessons/${lessonId}/questions/${questionId}/options/${optionId}`
+            );
+            toast.success("Варіант видалено");
+            router.refresh();
+        } catch {
+            toast.error("Помилка під час видалення варіанта");
+        }
+    };
 
     const correctAnsw = options.find((option) => option.isCorrect);
 
@@ -79,7 +90,7 @@ export const SinglechoiceForm = ({ courseId, lessonId, questionId,options }: Sin
                 </Button>
             </CardHeader>
             <CardBody>
-            {!isAdding && (
+            {!isAdding &&(
                 <>
                     <p className={`text-sm mb-2 ${options.length!==0 ? 'text-gray-500' : ''}`}>
                         Правильна відповідь: {correctAnsw?.label || " немає"}
@@ -92,7 +103,19 @@ export const SinglechoiceForm = ({ courseId, lessonId, questionId,options }: Sin
                                 items={options}
                             >
                                 {
-                                    options.map((option) => <Radio key={option.value} value={option.value}>{option.label}</Radio>)
+                                    options.map((option) =>
+                                    <div key={option.value} className="flex justify-between items-center">
+                                        <Radio value={option.value}>{option.label}</Radio>
+                                        <div className="flex gap-2 items-center">
+                                            <Button
+                                                isIconOnly
+                                                color="danger"
+                                                onPress={() => onDeleteOption(option.value)}>
+                                                <Trash className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    )
                                 }
                             </RadioGroup>
                             :
@@ -137,9 +160,6 @@ export const SinglechoiceForm = ({ courseId, lessonId, questionId,options }: Sin
                             </Button>
                         </div>
                     </form>
-                    <p className="text-xs text-muted-foreground mt-4">
-                        Зауважте, додання варіанту відповіді - це незворотна дія, впевніться в коректності введених даних
-                    </p>
                 </>
             )}
             </CardBody>

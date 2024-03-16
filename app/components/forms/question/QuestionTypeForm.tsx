@@ -6,13 +6,13 @@ import {BookOpenCheck, ListTodo, Pencil, PlusCircle} from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Course } from "@prisma/client";
+import {Course, Question} from "@prisma/client";
 import {Button} from "@nextui-org/button";
 import {Select, SelectItem} from "@nextui-org/react";
 import {Card, CardBody, CardHeader} from "@nextui-org/card";
 
 interface QuestionTypeFormProps {
-    initialData: Course;
+    initialData: Question;
     courseId: string;
     lessonId: string;
     questionId: string
@@ -85,6 +85,7 @@ export const QuestionTypeForm = ({
                     onClick={toggleEdit}
                     variant="ghost"
                     color='primary'
+                    isDisabled={initialData.answers?.length!==0}
                     startContent={
                         isEditing
                             ?

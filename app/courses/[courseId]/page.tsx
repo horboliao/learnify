@@ -81,6 +81,7 @@ const CourseViewPage = async ({params}: { params: { courseId: string }}) => {
                     price={course.price}
                     categoryObj={categoryObj}
                     lessons={course.lessons}
+                    attachments={course.attachments}
                 />
             </div>
         </div>
