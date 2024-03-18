@@ -80,7 +80,7 @@ console.log(id)
                     <Card className="p-2">
                         <CardBody>
                             {attachments.length > 0 && (
-                                <div className="space-y-2">
+                                <div className="flex flex-col space-y-2">
                                     {attachments.map((attachment) => (
                                         <Link
                                             href={attachment.url}

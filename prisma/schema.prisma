@@ -27,6 +27,7 @@ model User {
   CourseProgress CourseProgress[]
   LessonProgress LessonProgress[]
   AnswerProgress AnswerProgress[]
+  courses Course[]
 }
 
 model Account {
@@ -121,6 +122,7 @@ model Course {
   updatedAt DateTime @updatedAt
 
   category       Category?        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  author       User?        @relation(fields: [authorId], references: [id], onDelete: Cascade)
   categoryId     String?
   CourseProgress CourseProgress[]
 }

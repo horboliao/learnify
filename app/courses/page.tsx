@@ -1,12 +1,44 @@
 import React from 'react';
-import Header from "@/app/components/header/Header";
 import CoursesList from "@/app/components/lists/CoursesList";
+import {database} from "@/lib/database";
+import {Categories} from "@/app/components/filter/Categories";
+import {SearchInput} from "@/app/components/filter/SearchInput";
 
-const CoursesPage = () => {
+interface CoursesPageProps {
+    searchParams: {
+        title: string;
+        categoryId: string;
+    }
+}
+
+const CoursesPage = async ({
+                              searchParams
+                          }: CoursesPageProps) => {
+    const courses = await database.course.findMany({
+        where: {
+            isOpen: true,
+            categoryId: searchParams.categoryId,
+            title: {
+                contains: searchParams.title,
+                mode: 'insensitive'
+            },
+        },
+        include: {
+            lessons: {
+                where: {
+                    isOpen: true
+                }
+            },
+            author: true,
+            category: true
+        },
+    });
+    const categories = await database.category.findMany();
     return (
-        <div className={'p-6'}>
-            <Header/>
-            <CoursesList/>
+        <div className={'flex flex-col gap-6 p-6'}>
+            <SearchInput/>
+            <Categories items={categories}/>
+            <CoursesList courses={courses}/>
         </div>
     );
 };

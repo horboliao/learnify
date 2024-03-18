@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 
 import { database } from "@/lib/database";
 import {currentUser} from "@/lib/auth";
+import {NextApiRequest, NextApiResponse} from "next";
 
 export async function POST(
     req: Request,
