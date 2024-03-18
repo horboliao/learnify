@@ -1,9 +1,6 @@
 import React from 'react';
 import CourseCard from "@/app/components/cards/CourseCard";
-import {database} from "@/lib/database";
-import {Category, Course, User} from "@prisma/client";
-import {currentUser} from "@/lib/auth";
-import {redirect} from "next/navigation";
+import {Course} from "@prisma/client";
 
 interface CoursesListProps {
     courses: Course [];

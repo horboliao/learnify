@@ -1,7 +1,5 @@
 import React from 'react';
-import {Avatar, Card, CardBody, CardFooter, CardHeader, Divider, Image, Link} from "@nextui-org/react";
 import {currentUser} from "@/lib/auth";
-import {Button} from "@nextui-org/button";
 import NameForm from "@/app/components/forms/profile/NameForm";
 import SurnameForm from "@/app/components/forms/profile/SurnameForm";
 import EmailForm from "@/app/components/forms/profile/EmailForm";

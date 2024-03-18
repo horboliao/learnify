@@ -7,6 +7,7 @@ import {User} from "@nextui-org/user";
 import {subjects} from "@/lib/subjects";
 import {isEnrolled} from "@/lib/statictics";
 import {currentUser} from "@/lib/auth";
+import {Link} from "@nextui-org/link";
 
 const CourseViewPage = async ({params}: { params: { courseId: string }}) => {
     const user = await currentUser();
@@ -68,13 +69,15 @@ const CourseViewPage = async ({params}: { params: { courseId: string }}) => {
                             />
                         }
                     </div>
-                    <User
-                        name={`${author.name} ${author.surname}`}
-                        description={author.email}
-                        avatarProps={{
-                            src: `${author.avatar}`
-                        }}
-                    />
+                    <Link href={`/profile/${author.id}`}>
+                        <User
+                            name={`${author.name} ${author.surname}`}
+                            description={author.email}
+                            avatarProps={{
+                                src: `${author.avatar}`
+                            }}
+                        />
+                    </Link>
                 </div>
                 <CourseContent
                     description={course.description}

@@ -53,54 +53,6 @@ const CourseCard = ({id, title, backgroundUrl, price, category, authorName, auth
                     lessonCount={lessonCount}
                     price={price}
                 />
-                {/*<div className="flex flex-wrap gap-2">*/}
-                {/*    <Chip*/}
-                {/*        key={category}*/}
-                {/*        variant="flat"*/}
-                {/*        color='primary'*/}
-                {/*        size="lg"*/}
-                {/*    >*/}
-                {/*        {categoryObj?.picture} {categoryObj?.name}*/}
-                {/*    </Chip>*/}
-                {/*    <Chip*/}
-                {/*        key={lessonCount}*/}
-                {/*        color='primary'*/}
-                {/*        variant="bordered"*/}
-                {/*        size="lg"*/}
-                {/*        startContent={<ClipboardCheck/>}*/}
-                {/*    >*/}
-                {/*        {*/}
-                {/*            lessonCount === 1*/}
-                {/*            ?*/}
-                {/*                <>*/}
-                {/*                    {lessonCount} урок*/}
-                {/*                </>*/}
-                {/*            :*/}
-                {/*                lessonCount > 1 && lessonCount < 5*/}
-                {/*                ?*/}
-                {/*                <>*/}
-                {/*                    {lessonCount} уроки*/}
-                {/*                </>*/}
-                {/*                    :*/}
-                {/*                    <>*/}
-                {/*                        {lessonCount} уроків*/}
-                {/*                    </>*/}
-                {/*        }*/}
-                {/*    </Chip>*/}
-                {/*    {*/}
-                {/*        price && (*/}
-                {/*            <Chip*/}
-                {/*                key={price}*/}
-                {/*                color='warning'*/}
-                {/*                variant="shadow"*/}
-                {/*                size="lg"*/}
-                {/*                startContent={<DollarSign/>}*/}
-                {/*            >*/}
-                {/*                {price} гривень*/}
-                {/*            </Chip>*/}
-                {/*        )*/}
-                {/*    }*/}
-                {/*</div>*/}
             </CardBody>
         </Card>
     );
