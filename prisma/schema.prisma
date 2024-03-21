@@ -28,6 +28,7 @@ model User {
   LessonProgress LessonProgress[]
   AnswerProgress AnswerProgress[]
   courses Course[]
+  orsers Order[]
 }
 
 model Account {
@@ -105,7 +106,19 @@ model AnswerProgress {
   LessonProgress   LessonProgress? @relation(fields: [lessonProgressId], references: [id])
   lessonProgressId String?
 }
-
+model Order {
+  id String @id @default(uuid()) @map("_id")
+  studentId String
+  courseId String
+  status   OrderStatus  @default(NEW)
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student  User        @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+enum OrderStatus {
+  NEW
+  CANCELLED
+  VERIFIED
+}
 model Course {
   id            String  @id @default(uuid()) @map("_id")
   authorId      String
@@ -125,6 +138,7 @@ model Course {
   author       User?        @relation(fields: [authorId], references: [id], onDelete: Cascade)
   categoryId     String?
   CourseProgress CourseProgress[]
+  orders Order[]
 }
 
 model Category {
