@@ -5,7 +5,7 @@ import EnrollAction from "@/app/components/actions/EnrollAction";
 import CourseContent from "@/app/components/course/CourseContent";
 import {User} from "@nextui-org/user";
 import {subjects} from "@/lib/subjects";
-import {isEnrolled} from "@/lib/statictics";
+import {courseEnrollmentStatus, isEnrolled} from "@/lib/statictics";
 import {currentUser} from "@/lib/auth";
 import {Link} from "@nextui-org/link";
 
@@ -38,18 +38,18 @@ const CourseViewPage = async ({params}: { params: { courseId: string }}) => {
 
     const author = await database.user.findUnique({
         where: {
-            id: course.authorId
+            id: course?.authorId
         }
     })
     const category = await database.category.findUnique({
         where: {
-            id: course.categoryId
+            id: course?.categoryId
         }
     })
     const categoryObj = subjects.find(subject => subject.name===category.name)
 
     const enrolled = await isEnrolled(user?.id || "", course.id)
-
+    const status = await courseEnrollmentStatus(user?.id || "", course.id)
     return (
         <div>
             <div className="p-6 flex flex-col items-start gap-8">
@@ -65,6 +65,8 @@ const CourseViewPage = async ({params}: { params: { courseId: string }}) => {
                                 courseId={course.id}
                                 categoryId={course.categoryId}
                                 isEnrolled={enrolled}
+                                isDisabled={status==="NEW"}
+                                price={course.price}
                                 lessonCount={course.lessons.length}
                             />
                         }

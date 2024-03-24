@@ -8,55 +8,65 @@ import {useCurrentUser} from "@/hooks/useCurrentUser";
 
 interface EnrollActionProps {
     isEnrolled: boolean;
+    isDisabled: boolean;
     courseId: string;
     categoryId: string;
+    price: number;
     lessonCount: number;
 }
-const EnrollAction = ({isEnrolled, courseId, categoryId, lessonCount}:EnrollActionProps) => {
+const EnrollAction = ({isEnrolled, isDisabled, courseId, categoryId, lessonCount, price}:EnrollActionProps) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isEnrolledState, setIsEnrolledState] = useState(isEnrolled);
+    const [isDis, setIsDis] = useState(isDisabled);
     const user = useCurrentUser();
 
     const onClick = async () => {
         try {
             setIsLoading(true);
-            if (!isEnrolled) {
+            if (!isEnrolledState) {
                 const values = {
                     userId: user?.id,
                     categoryId, lessonCount
                 }
                 await axios.post(`/api/courses/${courseId}/enroll`, values);
                 toast.success("Записано на курс");
+                if(price) {
+                    setIsDis(true)
+                }
             }
             router.refresh();
         } catch {
             toast.error("Не вдалось записатись на курс");
         } finally {
             setIsLoading(false);
-            router.push(`/student/${courseId}`)
+            setIsEnrolledState(true)
         }
     }
-
     return (
         <div className="flex flex-row gap-2">
-            <Button
-                color='primary'
-                size='lg'
-                disabled={isLoading}
-                onPress={onClick}
-            >
-                {
-                    isEnrolled
+            {
+                isEnrolledState
                     ?
-                        <>
-                            Перейти до курсу
-                        </>
-                        :
-                        <>
-                            Записатись
-                        </>
-                }
-            </Button>
+                    <Button
+                        color='primary'
+                        size='lg'
+                        href={`/student/${courseId}`}
+                        isDisabled={isLoading||isDis}
+                    >
+                        Перейти до курсу
+                    </Button>
+                    :
+                    <Button
+                        color='primary'
+                        size='lg'
+                        isDisabled={isLoading||isDis}
+                        onPress={onClick}
+                    >
+                        Записатись
+                    </Button>
+
+            }
         </div>
     );
 };

@@ -37,8 +37,8 @@ export default function CourseHeader({}:CourseHeaderProps) {
                             </Link>
                         </NavbarItem>
                         <NavbarItem>
-                            <Link color="foreground" href="/student/analytics">
-                                Аналітика
+                            <Link color="foreground" href="/orders">
+                                Заявки
                             </Link>
                         </NavbarItem>
                         </>

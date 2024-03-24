@@ -8,14 +8,14 @@ export async function POST(
     { params }: { params: { courseId: string } }
 ) {
     try {
-        /*
-          userId          String
-          courseId        String
-          categoryId      String
-          lessonsProgress LessonProgress[]
-
-          lessonCount          Int
-         */
+        const existingCourse = await database.course.findUnique({
+            where: {
+                id: params.courseId
+            }
+        })
+        if (!existingCourse) {
+            return new NextResponse("No such course found", { status: 404 });
+        }
         const { userId, categoryId,  lessonCount} = await req.json();
 
         const role = await currentRole();
@@ -24,13 +24,23 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const courseProgress = await database.courseProgress.create({
-            data: {
-                courseId: params.courseId, userId, categoryId, lessonCount
-            }
-        })
+        let courseProgress, newOrder;
+        if (existingCourse.price){
+            newOrder = await database.order.create({
+                data: {
+                    studentId: userId,
+                    courseId: params.courseId,
+                }
+            })
+        } else {
+            courseProgress = await database.courseProgress.create({
+                data: {
+                    courseId: params.courseId, userId, categoryId, lessonCount
+                }
+            })
+        }
 
-        return NextResponse.json(courseProgress);
+        return NextResponse.json(!existingCourse.price ? courseProgress : newOrder);
     } catch (error) {
         console.log("[COURSE_ENROLL]", error);
         return new NextResponse("Internal Error", { status: 500 });
