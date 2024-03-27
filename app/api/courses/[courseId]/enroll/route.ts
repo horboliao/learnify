@@ -38,6 +38,21 @@ export async function POST(
                     courseId: params.courseId, userId, categoryId, lessonCount
                 }
             })
+            const lessons = await database.lesson.findMany({
+                where: {
+                    courseId: params.courseId
+                }
+            });
+
+            for (const lesson of lessons) {
+                await database.lessonProgress.create({
+                    data: {
+                        userId,
+                        lessonId: lesson.id,
+                       courseProgressId: courseProgress.id
+                    }
+                });
+            }
         }
 
         return NextResponse.json(!existingCourse.price ? courseProgress : newOrder);

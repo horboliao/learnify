@@ -46,6 +46,8 @@ const Test = ({questionCount, sumPoints, sumScoredPoints, answerProgress, questi
                         <p><span className="font-medium">Порада:</span> Зосередьте увагу на ключових словах у питаннях
                             та відповідях.
                             Це допоможе вам зорієнтуватися та швидше визначити правильні відповіді.
+                            Десяткові числа вводити з комою - напр. 0,5
+                            Обов'язково завершіть тест при його закінченні
                         </p>
                     </CardBody>
                 </Card>
@@ -58,17 +60,7 @@ const Test = ({questionCount, sumPoints, sumScoredPoints, answerProgress, questi
                             size="lg"
                             startContent={<HelpCircle/>}
                         >
-                            {
-                                questionCount < 5
-                                    ?
-                                    <>
-                                        {questionCount} питання
-                                    </>
-                                    :
-                                    <>
-                                        {questionCount} питань
-                                    </>
-                            }
+                            {questionCount} питання
                         </Chip>
                         {
                             answerProgress.length !== 0 &&

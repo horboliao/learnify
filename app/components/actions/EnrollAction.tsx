@@ -1,10 +1,10 @@
 "use client"
 import React, {useState} from 'react';
-import {Button} from "@nextui-org/button";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "axios";
 import {useCurrentUser} from "@/hooks/useCurrentUser";
+import { Link, Button } from "@nextui-org/react";
 
 interface EnrollActionProps {
     isEnrolled: boolean;
@@ -51,6 +51,7 @@ const EnrollAction = ({isEnrolled, isDisabled, courseId, categoryId, lessonCount
                     <Button
                         color='primary'
                         size='lg'
+                        as={Link}
                         href={`/student/${courseId}`}
                         isDisabled={isLoading||isDis}
                     >

@@ -39,9 +39,16 @@ const LessonContentPage = async ({params}: {
             }
         }
     })
+    const lessonProgress = await database.lessonProgress.findFirst({
+        where: {
+            userId: user.id,
+            lessonId
+        }
+    })
     const answerProgress = await database.answerProgress.findMany({
         where: {
-            userId: user.id
+            userId: user.id,
+            lessonProgressId: lessonProgress.id
         }
     })
     const questionCount = lesson.questions.length
@@ -82,7 +89,7 @@ const LessonContentPage = async ({params}: {
                                     <p>Проходження тесту</p>
                                 </div>
                                 <Test
-                                    questionCount={questionCount}
+                                    questionCount={lesson.questions.length}
                                     answerProgress={answerProgress}
                                     sumPoints={sumPoints || 0}
                                     sumScoredPoints={sumScoredPoints || 0}

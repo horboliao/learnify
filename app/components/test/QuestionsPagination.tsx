@@ -9,6 +9,7 @@ import {DndList} from "@/app/components/lists/DndList";
 import {Preview} from "@/app/components/Preview";
 import axios from "axios";
 import {useCurrentUser} from "@/hooks/useCurrentUser";
+import {useRouter} from "next/navigation";
 
 interface QuestionsProps {
     questionCount: number;
@@ -17,6 +18,7 @@ interface QuestionsProps {
 }
 const QuestionsPagination = ({questionCount, questions, lessonId}:QuestionsProps) => {
     const user = useCurrentUser();
+    const router = useRouter();
     const [currentPage, setCurrentPage] = React.useState(1);
     const [question, setQuestion] = React.useState(questions[currentPage-1]);
     const [inputValues, setInputValues] = useState([]);
@@ -136,6 +138,19 @@ const QuestionsPagination = ({questionCount, questions, lessonId}:QuestionsProps
         setDisplayExplanation(true)
     };
 
+    const saveLessonProgress = async () => {
+        try {
+            const values ={
+                isCompleted: true
+            }
+            await axios.patch(`/api/progress/${user?.id}/lessons/${lessonId}`, values)
+        } catch {
+            console.error("error in saving lesson progress")
+        } finally {
+            // router.refresh()
+            window.location.reload()
+        }
+    }
     const saveAnswerProgress = async (isCorrect: boolean, pointsScored: number) => {
         try {
             const values = {
@@ -182,8 +197,9 @@ const QuestionsPagination = ({questionCount, questions, lessonId}:QuestionsProps
     const renderQuestion = () => {
         return (
             <div className={'my-4'}>
-                <div className={'flex flex-wrap justify-between gap-2 mb-4'}>
+                <div className={'flex flex-col justify-between gap-2 mb-4'}>
                     <p className={'w-10/12'}>{question.title}</p>
+                    <Preview value={question.notes} />
                     <div className={'flex flex-row gap-2'}>
                         <Chip
                             variant={'flat'}
@@ -288,7 +304,11 @@ const QuestionsPagination = ({questionCount, questions, lessonId}:QuestionsProps
                     variant="bordered"
                     color="primary"
                     endContent={<MoveRight/>}
-                    onPress={() => toggleQuestion(currentPage < questionCount ? currentPage + 1 : currentPage)}
+                    onPress={currentPage === questionCount
+                        ?
+                        ()=>{saveLessonProgress()}
+                        :
+                        () => toggleQuestion(currentPage < questionCount ? currentPage + 1 : currentPage)}
                 >
                     {currentPage === questionCount ? 'Завершити' : 'Наступне питання'}
                 </Button>

@@ -61,7 +61,7 @@ const CourseSidebar = () => {
                                     className="font-medium text-md"
                                     key={lesson.position+1}
                                     aria-label={lesson.title}
-                                    title={`${lesson.position+1}. ${lesson.title}`}
+                                    title={`${lesson.title}`}
                                     startContent={isComplete ? <CheckSquare2 className="w-4 h-4"/> : <Square className="w-4 h-4"/>}
                                 >
                                     <LessonContentItem
