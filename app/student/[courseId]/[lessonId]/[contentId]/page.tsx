@@ -10,7 +10,7 @@ const LessonContentPage = async ({params}: {
     params: { courseId: string; contentId: string; lessonId: string }
 }) => {
     const {contentId, lessonId, courseId} = params;
-    const user = currentUser();
+    const user = await currentUser();
     const courseProgress = await database.courseProgress.findFirst({
         where: {
             userId: user.id, courseId
@@ -51,7 +51,6 @@ const LessonContentPage = async ({params}: {
             lessonProgressId: lessonProgress.id
         }
     })
-    const questionCount = lesson.questions.length
     const sumPoints = lesson.questions.reduce((accumulator, currentValue) => {
         return accumulator + currentValue.weight;
     }, 0);

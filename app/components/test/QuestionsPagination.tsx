@@ -18,7 +18,6 @@ interface QuestionsProps {
 }
 const QuestionsPagination = ({questionCount, questions, lessonId}:QuestionsProps) => {
     const user = useCurrentUser();
-    const router = useRouter();
     const [currentPage, setCurrentPage] = React.useState(1);
     const [question, setQuestion] = React.useState(questions[currentPage-1]);
     const [inputValues, setInputValues] = useState([]);
@@ -56,9 +55,6 @@ const QuestionsPagination = ({questionCount, questions, lessonId}:QuestionsProps
         let earnedPoints: number = 0
 
         if (question.type === "INPUT") {
-            // isCorrect = question.answers.every((answer) => {
-            //     return inputValues.find(userAnswer => userAnswer.toLowerCase() === answer.title.toLowerCase())
-            // })
             const coefficient = question.weight/question.answers.length;
             question.answers.forEach((answer)=>{
                 const user = inputValues.find(userAnswer => userAnswer.toLowerCase() === answer.title.toLowerCase())
@@ -73,9 +69,6 @@ const QuestionsPagination = ({questionCount, questions, lessonId}:QuestionsProps
                 earnedPoints = question.weight || 0;
             }
         } else if (question.type === "MULTICHOICE") {
-            // isCorrect = question.answers.every(answer =>
-            //     multiValues.find(multiValue => answer.title === multiValue && answer.isCorrect) || !answer.isCorrect
-            // );
             let correctCount = 0;
             let incorrectCount = 0;
 
@@ -103,37 +96,28 @@ const QuestionsPagination = ({questionCount, questions, lessonId}:QuestionsProps
 
             isCorrect = Math.round(earnedPoints) === question.weight;
         } else {
-            // isCorrect = matchItems.every(item => {
-            //     const correctAnswer = question.answers.find(answer => answer.id === item.id);
-            //     return correctAnswer && correctAnswer.position === item.position;
-            // });
             if (matchItems.length === 0){
                 setMatchItems(question.answers)
             }
-            console.log(matchItems)
             const coefficient = question.weight/question.answers.length;
             const correctAnswers = matchItems.filter(item => {
                 const correctAnswer = question.answers.find(answer => answer.id === item.id);
                 return correctAnswer && correctAnswer.position === item.position;
             });
-            // if (correctAnswers.length === matchItems.length) {
-            //     earnedPoints = coefficient * correctAnswers.length;
-            // }
             earnedPoints = coefficient * correctAnswers.length;
-            console.log(correctAnswers,coefficient,earnedPoints)
             isCorrect = Math.round(earnedPoints) === question.weight;
         }
 
         if (isCorrect) {
             console.log("Правильно!");
-            await saveAnswerProgress(true, earnedPoints<0 ? 0 : earnedPoints)
+            await saveAnswerProgress(true, earnedPoints<0 ? 0 : Math.round(earnedPoints))
         } else {
             console.log("Неправильно!", question.answers);
-            await saveAnswerProgress(false, earnedPoints<0 ? 0 : earnedPoints)
+            await saveAnswerProgress(false, earnedPoints<0 ? 0 : Math.round(earnedPoints))
         }
         setExistingAnswer(prevState => ({
             ...prevState,
-            pointsScored: earnedPoints<0 ? 0 : earnedPoints
+            pointsScored: earnedPoints<0 ? 0 : Math.round(earnedPoints)
         }));
         setDisplayExplanation(true)
     };
