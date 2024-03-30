@@ -7,8 +7,8 @@ const OrdersPage = async () => {
     return (
         orders.length===0
             ?
-            <div className={'mt-12 font-bold text-3xl'}>
-                Заявок ще немає
+            <div className={'mt-6 text-3xl'}>
+                Заявок ще немає   🤷🏼‍♀️
             </div>
             :
             <>

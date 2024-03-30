@@ -9,6 +9,7 @@ import {Button} from "@nextui-org/button";
 import {useRouter} from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
+import {useCurrentRole} from "@/hooks/useCurrentRole";
 
 interface OrderCardProps {
     id: string;
@@ -25,6 +26,7 @@ interface OrderCardProps {
 
 const OrderCard = ({id, title, user, price, status}:OrderCardProps) => {
     const router = useRouter();
+    const role = useCurrentRole();
     const [isLoading, setIsLoading] = useState(false);
 
     const onSubmit = async () => {
@@ -81,7 +83,7 @@ const OrderCard = ({id, title, user, price, status}:OrderCardProps) => {
             </CardBody>
             <Divider/>
             <CardFooter className={'flex flex-row gap-2'}>
-                {status!=="VERIFIED" &&
+                {status!=="VERIFIED" && role==='TUTOR' &&
                     <Button
                         isDisabled={isLoading}
                         color={'primary'}
@@ -90,7 +92,7 @@ const OrderCard = ({id, title, user, price, status}:OrderCardProps) => {
                         onPress={onSubmit}
                     >Підтвердити</Button>
                 }
-                {status!=="CANCELLED" &&
+                {status!=="CANCELLED"&& role==='TUTOR' &&
                     <Button
                         isDisabled={isLoading}
                         color={'danger'}

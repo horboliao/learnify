@@ -24,6 +24,35 @@ export async function PATCH(
             }
         });
 
+        if (values.status === "VERIFIED") {
+            const course = await database.course.findUnique({
+                where: {
+                    id: order.courseId
+                }, include: {
+                    lessons: true
+                }
+            });
+
+            const courseProgress = await database.courseProgress.create({
+                data: {
+                    courseId: order.courseId,
+                    userId: order.studentId,
+                    categoryId: course.categoryId,
+                    lessonCount: course.lessons.length
+                }
+            });
+
+            for (const lesson of course.lessons) {
+                await database.lessonProgress.create({
+                    data: {
+                        userId: order.studentId,
+                        lessonId: lesson.id,
+                        courseProgressId: courseProgress.id
+                    }
+                });
+            }
+        }
+
         return NextResponse.json(order);
     } catch (error) {
         console.log("[COURSE_ID]", error);
