@@ -9,6 +9,7 @@ import CourseContentItem from "@/app/components/course/CourseContentItem";
 import {Unlock, Lock, File, X, ArrowDownToLine} from "lucide-react";
 import {Button} from "@nextui-org/button";
 import {Link} from "@nextui-org/link";
+import CourseStat from "@/app/components/course/CourseStat";
 
 interface CourseContentProps {
     description: string;
@@ -17,15 +18,30 @@ interface CourseContentProps {
         picture: string;
     }
     price: number;
+    studentsCount: number;
+    completedStudentsCount: number;
+    averagePointsScored: number;
+    highestPointsScored: number;
+    lowestPointsScored: number;
+    totalPoints: number;
     lessons: Lesson[] & { questions: Question[] };
     attachments: [];
 }
-const CourseContent = ({description, price, categoryObj, lessons, attachments}:CourseContentProps) => {
-    let lessonNumber = 0;
+const CourseContent = ({
+                           description,
+                           price,
+                           categoryObj,
+                           lessons,
+                           attachments,
+                           studentsCount,
+                           completedStudentsCount,
+                           highestPointsScored,
+                           lowestPointsScored,
+                           averagePointsScored,
+                           totalPoints
+}:CourseContentProps) => {
 
-    function onDownload(id: string) {
-console.log(id)
-    }
+    let lessonNumber = 0;
 
     return (
         <div className="w-full" >
@@ -72,7 +88,14 @@ console.log(id)
                 <Tab key='stat' title="Статистика">
                     <Card className="p-2">
                         <CardBody>
-                            тут буде колись статистика
+                            <CourseStat
+                                averagePointsScored={averagePointsScored}
+                                highestPointsScored={highestPointsScored}
+                                lowestPointsScored={lowestPointsScored}
+                                totalPoints={totalPoints}
+                                studentsCompleteCount={completedStudentsCount}
+                                studentsCount={studentsCount}
+                            />
                         </CardBody>
                     </Card>
                 </Tab>

@@ -8,6 +8,7 @@ import {subjects} from "@/lib/subjects";
 import {courseEnrollmentStatus, isEnrolled} from "@/lib/statictics";
 import {currentUser} from "@/lib/auth";
 import {Link} from "@nextui-org/link";
+import {getCourseProgressStats} from "@/lib/stat";
 
 const CourseViewPage = async ({params}: { params: { courseId: string }}) => {
     const user = await currentUser();
@@ -50,6 +51,28 @@ const CourseViewPage = async ({params}: { params: { courseId: string }}) => {
 
     const enrolled = await isEnrolled(user?.id || "", course.id)
     const status = await courseEnrollmentStatus(user?.id || "", course.id)
+
+    const studentsCount = await database.courseProgress.count({
+        where: { courseId: params.courseId }
+    });
+
+    const completedStudentsCount = await database.courseProgress.count({
+        where: { courseId: params.courseId, isCompleted: true }
+    });
+
+    const totalPoints = await database.question.aggregate({
+        _sum: {
+            weight: true
+        },
+        where: {
+            lesson: {
+                courseId: params.courseId
+            }
+        }
+    });
+
+    const { maxPoints, minPoints, avgPoints } = await getCourseProgressStats(params.courseId);
+
     return (
         <div>
             <div className="p-6 flex flex-col items-start gap-8">
@@ -87,6 +110,12 @@ const CourseViewPage = async ({params}: { params: { courseId: string }}) => {
                     categoryObj={categoryObj}
                     lessons={course.lessons}
                     attachments={course.attachments}
+                    studentsCount={studentsCount}
+                    averagePointsScored={avgPoints}
+                    highestPointsScored={maxPoints}
+                    lowestPointsScored={minPoints}
+                    totalPoints={totalPoints._sum.weight}
+                    completedStudentsCount={completedStudentsCount}
                 />
             </div>
         </div>

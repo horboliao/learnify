@@ -73,7 +73,6 @@ export const SignUpForm = () => {
             headerLabel="Реєстрація"
             backButtonLabel="Вже маєте акаунт?"
             backButtonHref="/login"
-            showSocial
         >
             <form
                 onSubmit={handleSubmit(onSubmit)}
